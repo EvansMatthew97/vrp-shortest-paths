@@ -1,5 +1,5 @@
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
-import { ClarkeWrightProblem, CWWeights, Point } from '../../libraries/savings-solver';
+import { ClarkeWrightProblem, CWWeights } from '../../../../dist';
 import { convertLength } from '@turf/helpers';
 
 import * as leaflet from 'leaflet';
@@ -8,7 +8,7 @@ import 'leaflet-draw-drag';
 import 'leaflet-textpath';
 
 import config from 'src/config';
-import { createRandomPoints } from 'src/libraries/util';
+import { createRandomPoints } from '../../libraries/util';
 
 @Component({
   selector: 'app-clarke-wright',
@@ -98,20 +98,31 @@ export class ClarkeWrightPage implements OnInit {
   }
 
   calculateSavings() {
-    const depot = new Point(this.depot.getLatLng().lng, this.depot.getLatLng().lat, 1);
+    const depot = {
+      lon: this.depot.getLatLng().lng,
+      lat: this.depot.getLatLng().lat,
+    };
+
     const points = this.drawnItems
       .getLayers()
       .filter(layer => layer !== this.depot)
       .map(layer => {
         const latLng = (layer as any).getLatLng();
-        return new Point(latLng.lng, latLng.lat, 1);
+        return {
+          lon: latLng.lng,
+          lat: latLng.lat,
+          demand: 1,
+        };
       });
 
     const maxFlightDistance = this.calculateFlightDistance();
-
     const flightDistanceDegrees = convertLength(maxFlightDistance, 'kilometers', 'degrees');
 
-    const problem = new ClarkeWrightProblem(points, depot, flightDistanceDegrees);
+    const problem = new ClarkeWrightProblem({
+      depot: depot,
+      customers: points,
+      maxDistance: flightDistanceDegrees,
+    });
 
     const solution = problem.solve(this.cwWeights, this.optimise);
 
@@ -128,17 +139,17 @@ export class ClarkeWrightPage implements OnInit {
     ];
 
     solution.forEach((route, routeIndex) => {
+      console.log(route);
       const path = new leaflet.Polyline([
-          // new leaflet.LatLng(route.depot.y, route.depot.x),
-          ...route.points.map(point => new leaflet.LatLng(point.y, point.x)),
-          new leaflet.LatLng(route.depot.y, route.depot.x),
+          ...route.points.map(point => new leaflet.LatLng(point[1], point[0])),
+          new leaflet.LatLng(route.points[0][1], route.points[0][0]),
         ], {
           color: colors[routeIndex % colors.length],
           weight: 3,
           opacity: 0.5,
         });
 
-      const distance = convertLength(route.totalDistance(), 'degrees', 'kilometers');
+      const distance = convertLength(route.distance, 'degrees', 'kilometers');
 
       (path as any).setText(`${Math.round(distance * 100) / 100}km`, {
         below: true,
