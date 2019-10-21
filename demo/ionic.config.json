@@ -1,0 +1,7 @@
+{
+  "name": "path-demo",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}

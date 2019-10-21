@@ -1,0 +1,29 @@
+{
+  "name": "shortest-paths",
+  "version": "0.0.1",
+  "description": "Vehicle routing problem algorithms",
+  "main": "./dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EvansMatthew97/vrp-shortest-paths.git"
+  },
+  "author": "Matthew Evans",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EvansMatthew97/vrp-shortest-paths/issues"
+  },
+  "homepage": "https://github.com/EvansMatthew97/vrp-shortest-paths#readme",
+  "devDependencies": {
+    "typescript": "^3.6.4"
+  },
+  "dependencies": {
+    "@turf/distance": "^6.0.1",
+    "@turf/helpers": "^6.1.4",
+    "@turf/line-slice-along": "^5.1.5",
+    "vecta": "0.0.4"
+  }
+}

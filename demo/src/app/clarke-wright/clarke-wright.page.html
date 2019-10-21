@@ -1,0 +1,90 @@
+<ion-content>
+  <div class="container">
+    <div #map class="map"></div>
+    <div class="sidebar">
+      <ion-card>
+        <ion-item>
+          <ion-label>Drone information</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked">Avg. flight speed (km/h)</ion-label>
+          <ion-input type="number"
+            [(ngModel)]="droneInfo.flightSpeed"
+            min="0"
+          ></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked">Avg. flight time (minutes)</ion-label>
+          <ion-input type="number"
+            [(ngModel)]="droneInfo.flightDuration"
+            min="0"
+          ></ion-input>
+        </ion-item>
+        <ion-item no-lines>
+          Flight distance: <b>{{ calculateFlightDistance() | number:'1.1-1' }}km</b>
+        </ion-item>
+      </ion-card>
+
+      <ion-card>
+        <ion-item>
+          <ion-label>Weights</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked">Adjacency weight</ion-label>
+          <ion-input type="number"
+            [(ngModel)]="cwWeights.adjacency"
+            min="0"
+            step="0.1"
+          ></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked">Asymmetry weight</ion-label>
+          <ion-input type="number"
+            [(ngModel)]="cwWeights.asymmetry"
+            min="0"
+            step="0.1"
+          ></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked">Demand weight</ion-label>
+          <ion-input type="number"
+            [(ngModel)]="cwWeights.demand"
+            min="0"
+            step="0.1"
+          ></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked">Minimum savings</ion-label>
+          <ion-input type="number"
+            [(ngModel)]="cwWeights.minSavings"
+            min="0"
+            step="0.1"
+          ></ion-input>
+        </ion-item>
+      </ion-card>
+
+      <ion-card>
+        <ion-item>
+          <ion-label>Randomise</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>Number of points</ion-label>
+          <ion-input type="number" min="0" step="1" [(ngModel)]="randomPointsOptions.count"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>Distance from origin</ion-label>
+          <ion-input type="number" min="0" step="1" [(ngModel)]="randomPointsOptions.distance"></ion-input>
+        </ion-item>
+        <ion-button (click)="randomPoints()">Randomise</ion-button>
+      </ion-card>
+
+      <ion-card>
+        <ion-item>
+          <ion-label>2-Opt optimise</ion-label>
+          <ion-checkbox [(ngModel)]="optimise"></ion-checkbox>
+        </ion-item>
+        <ion-button (click)="calculateSavings()">Generate</ion-button>
+      </ion-card>
+    </div>
+  </div>
+</ion-content>
