@@ -17,7 +17,7 @@ export interface ClarkeWrightProblemOptions {
 /**
  * Interface for points
  */
-export interface Customer {
+interface Customer {
   lon: number;
   lat: number;
   demand: number;
@@ -100,7 +100,10 @@ export class ClarkeWrightProblem {
    * @param weights Clarke Wright weight
    * @param optimise
    */
-  public solve(weights: CWWeights, optimise = true) {
+  public solve(weights: CWWeights, optimise = true): Array<{
+    points: Array<[number, number]>;
+    distance: number;
+  }> {
     // first, create one route per point
     this.solutions = this.points.map(point => new Route(point, this.depot));
     // then calculate savings
@@ -139,7 +142,14 @@ export class ClarkeWrightProblem {
     // sort the routes by their demand served
     return this.solutions
       .filter(route => route.totalDistance() < this.maxDistance) // some routes might be too long for outlier points
-      .sort((a, b) => b.totalDemand() / b.totalDistance() - a.totalDemand() / a.totalDistance());
+      .sort((a, b) => b.totalDemand() / b.totalDistance() - a.totalDemand() / a.totalDistance())
+      .map((route: Route) => ({
+        points: [
+          ...route.points.map(point => [point.x, point.y]),
+          [route.depot.x, route.depot.y]
+        ] as [number, number][],
+        distance: route.totalDistance(),
+      }));
   }
 
   /**
@@ -271,7 +281,7 @@ export class ClarkeWrightProblem {
 /**
  * A Clarke Wright algorithm point
  */
-export class Point {
+class Point {
   x: number;
   y: number;
   demand: number;
